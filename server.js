@@ -8,7 +8,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended:true}));
 
 const data = fs.readFileSync('./database.json');    // 파일 읽어오기
-const conf = JSON.parse(data);
+const conf = JSON.parse(data);  
 const mysql = require('mysql');
 
 const connection = mysql.createConnection({
