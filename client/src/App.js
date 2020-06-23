@@ -2,8 +2,19 @@
 import React, { Component } from 'react';
 import './App.css';
 import Customer from './components/Customer';
-import { Table, TableHead, TableBody, TableRow, TableCell, Paper } from '@material-ui/core'
+import { Table, TableHead, TableBody, TableRow, TableCell, Paper, CircularProgress } from '@material-ui/core'
 import { withStyles} from '@material-ui/core/styles';
+
+/*
+  리액트 라이브러리가 처음 component를 실행하는 순서
+  1) constructor()
+  2) componentWillMount()
+  3) render() : 실제로 component를 화면에 그림
+  4) componentDidMount()
+
+  props or state 변경 시 => shouldComponentUpdate()
+      - 다시 render()를 호출해 view를 갱신
+*/
 
 const styles = theme => ({
   root : {
@@ -13,6 +24,9 @@ const styles = theme => ({
   }, 
   table : {
     minWidth : 1080
+  },
+  progress : {
+    margin : theme.spacing.unit * 2
   }
 })
 
@@ -20,19 +34,26 @@ const styles = theme => ({
 class App extends Component {
 
   state = { // component 내에서 변경될 수 있는 것
-    customers : ""
+    customers : "",
+    completed : 0   //프로그레스바 %
   }
 
   componentDidMount() { 
+    this.timer = setInterval(this.progress, 20);
     this.callApi()
     .then(res => this.setState({customers:res}))
     .catch(err => console.log(err));
   }
 
-  callApi = async () => {
+  callApi = async () => { // API를 비동기적으로 호출
     const response = await fetch('/api/customers');
     const body = await response.json();
     return body;
+  }
+
+  progress = () => {
+    const { completed } = this.state;
+    this.setState({completed : completed >= 100 ? 0 : completed +1})
   }
 
   render() {
@@ -64,7 +85,13 @@ class App extends Component {
                   job={c.job}
                 />
               )
-            }) : ""}
+            }) : 
+              <TableRow>
+                <TableCell colspan="6" align="center">
+                  <CircularProgress className={classes.progress} variant="determinate" value={this.state.completed}/>
+                </TableCell>
+              </TableRow>
+            }
           </TableBody>
         </Table>
       </Paper>
