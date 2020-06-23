@@ -3,6 +3,19 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 import Customer from './components/Customer';
+import { Table, TableHead, TableBody, TableRow, TableCell, Paper } from '@material-ui/core'
+import { withStyles} from '@material-ui/core/styles';
+
+const styles = theme => ({
+  root : {
+    width : '100%',
+    marginTop : theme.spacing.unit * 3,
+    overflowX : "auto"
+  }, 
+  table : {
+    minWidth : 1080
+  }
+})
 
 const customers = [
   {
@@ -34,24 +47,39 @@ const customers = [
 // 하나의 component안에 여러 개의 component 가능
 class App extends Component {
   render() {
+    const {classes} = this.props;
     return (
-      <div>
-        { customers.map(c => {  // map : 반복문
-            return (
-              <Customer
-                key={c.id}  // map 사용 시 key 필수 (사용 안하면 개발자 도구 console에 오류 출력)
-                id={c.id}
-                image={c.image}
-                name={c.name}
-                birthday={c.birthday}
-                gender={c.gender}
-                job={c.job}
-              />
-            )
-          })}
-      </div>
+      <Paper className={classes.root}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <TableCell>번호</TableCell>
+              <TableCell>이미지</TableCell>
+              <TableCell>이름</TableCell>
+              <TableCell>생년월일</TableCell>
+              <TableCell>성별</TableCell>
+              <TableCell>직업</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+            {customers.map(c => {  // map : 반복문
+              return (
+                <Customer
+                  key={c.id}  // map 사용 시 key 필수 (사용 안하면 개발자 도구 console에 오류 출력)
+                  id={c.id}
+                  image={c.image}
+                  name={c.name}
+                  birthday={c.birthday}
+                  gender={c.gender}
+                  job={c.job}
+                />
+              )
+            })}
+          </TableBody>
+        </Table>
+      </Paper>
     );
   }
 }
 
-export default App;
+export default withStyles(styles)(App);
