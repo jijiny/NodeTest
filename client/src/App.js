@@ -34,10 +34,23 @@ const styles = theme => ({
 // 하나의 component안에 여러 개의 component 가능
 class App extends Component {
 
-  state = { // component 내에서 변경될 수 있는 것
-    customers : "",
-    completed : 0   //프로그레스바 %
+  constructor(props) {
+    super(props);
+    this.state = {
+      customer : '',
+      completed : 0
+    }
   }
+
+stateRefresh = () => {
+  this.setState({
+    customers : '',
+    completed : 0
+  });
+  this.callApi()
+    .then(res => this.setState({customers:res}))
+    .catch(err => console.log(err));
+}
 
   componentDidMount() { 
     this.timer = setInterval(this.progress, 20);
@@ -97,7 +110,7 @@ class App extends Component {
           </TableBody>
         </Table>
       </Paper>
-      <CustomerAdd/>
+      <CustomerAdd stateRefresh={this.stateRefresh}/> {/* stateRefresh 함수를 전달*/}
       </div>
     );
   }
