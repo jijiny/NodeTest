@@ -24,6 +24,7 @@ connection.connect();   // 연결을 수행
 const multer = require('multer');
 const upload = multer({dest:'./upload'});
 
+// 고객 목록 불러오기
 app.get('/api/customers', (req, res) => {
     // 데이터 전달해주는 하드코딩
     // res.send(
@@ -55,7 +56,7 @@ app.get('/api/customers', (req, res) => {
         //   ]
     // );
     connection.query(
-      "SELECT * FROM CUSTOMER",
+      "SELECT * FROM CUSTOMER WHERE isDeleted = 0",
        (err, rows, fields) => {     // 실제로 가져온 데이터는 rows로 처리
             res.send(rows);
        } 
@@ -64,8 +65,9 @@ app.get('/api/customers', (req, res) => {
 
 app.use('/image',express.static('./upload'));
 
+// 고객 정보 추가
 app.post('/api/customers', upload.single('image'), (req,res) => {
-    let sql = 'INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?)';
+    let sql = 'INSERT INTO CUSTOMER VALUES (null, ?, ?, ?, ?, ?, now(), 0)';
     let image = 'http://localhost:5000/image/' + req.file.filename;
     let name = req.body.name;
     let birthday = req.body.birthday;
@@ -73,6 +75,26 @@ app.post('/api/customers', upload.single('image'), (req,res) => {
     let job = req.body.job;
     let params = [image, name, birthday, gender, job];
     connection.query(sql, params, 
+        (err, rows, fields) => {
+            res.send(rows);
+        })
+})
+
+// 고객 정보 삭제 (DB는 삭제 안됨)
+app.delete('/api/customers/:id', (req,res) => {
+    let sql = 'UPDATE CUSTOMER SET isDeleted = 1 WHERE id = ?';
+    let params = [req.params.id];
+    connection.query(sql,params,
+        (err, rows, fields) => {
+            res.send(rows);
+        })
+})
+
+// 고객 정보 삭제 (DB까지 삭제)
+app.delete('/api/customers/delete/:id', (req,res) => {
+    let sql = 'DELETE FROM CUSTOMER WHERE id = ?';
+    let params = [req.params.id];
+    connection.query(sql, params,
         (err, rows, fields) => {
             res.send(rows);
         })

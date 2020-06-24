@@ -1,5 +1,6 @@
 import React from 'react';
 import { TableRow, TableCell } from '@material-ui/core';
+import CustomerDelete from './CustomerDelete';
 
 class Customer extends React.Component { // react.component는 일종의 라이브러리이자 클래스 (상속받아 하나의 component 정의)
     // 실제로 그려지는 내용이 render에 담김
@@ -18,6 +19,7 @@ class Customer extends React.Component { // react.component는 일종의 라이�
                 <TableCell>{this.props.birthday}</TableCell>
                 <TableCell>{this.props.gender}</TableCell>
                 <TableCell>{this.props.job}</TableCell>
+                <TableCell><CustomerDelete stateRefresh={this.props.stateRefresh} id={this.props.id}/></TableCell>
             </TableRow>
         );
     }

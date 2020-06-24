@@ -84,6 +84,7 @@ stateRefresh = () => {
               <TableCell>생년월일</TableCell>
               <TableCell>성별</TableCell>
               <TableCell>직업</TableCell>
+              <TableCell>설정</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -91,6 +92,7 @@ stateRefresh = () => {
             {this.state.customers ? this.state.customers.map(c => {  // map : 반복문
               return (
                 <Customer
+                  stateRefresh={this.stateRefresh}
                   key={c.id}  // map 사용 시 key 필수 (사용 안하면 개발자 도구 console에 오류 출력)
                   id={c.id}
                   image={c.image}
